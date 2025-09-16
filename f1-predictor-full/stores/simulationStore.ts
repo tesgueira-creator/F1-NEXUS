@@ -36,7 +36,12 @@ export const useSimulationStore = create<State>()(
       endRun: () => {
         const s = get();
         if (!s.currentRun) return;
-        set({ isRunning: false, isFinished: true, history: [...s.history, s.currentRun] });
+        set({
+          currentRun: null,
+          isRunning: false,
+          isFinished: true,
+          history: [...s.history, s.currentRun]
+        });
       },
       resetRun: () => set({ currentRun: null, isRunning: false, isFinished: false }),
       toggleDriver: (name, team) => {

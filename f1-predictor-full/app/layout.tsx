@@ -1,3 +1,5 @@
+import Navbar from "components/Navbar";
+
 export default function RootLayout({
   children,
 }: {
@@ -5,7 +7,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-dark text-white min-h-screen">{children}</body>
+      <body className="bg-dark text-white min-h-screen">
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }

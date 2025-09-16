@@ -16,6 +16,15 @@
     "types": ["vitest/globals", "@testing-library/jest-dom", "node"],
     "baseUrl": "."
   },
-  "include": ["next-env.d.ts", "app/**/*", "components/**/*", "stores/**/*", "tests/**/*", "styles/**/*"],
+  "include": [
+    "next-env.d.ts",
+    "app/**/*",
+    "components/**/*",
+    "data/**/*",
+    "lib/**/*",
+    "stores/**/*",
+    "tests/**/*",
+    "styles/**/*"
+  ],
   "exclude": ["node_modules"]
 }

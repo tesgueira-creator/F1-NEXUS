@@ -241,11 +241,25 @@ def build_driver_base(
     tables: Mapping[str, pd.DataFrame],
     race_id: int,
 ) -> pd.DataFrame:
-    """Return the driver level dataframe for the chosen race."""
+    """Return the driver level dataframe for the chosen race.
 
-    results = tables["results"]
-    drivers = tables["drivers"]
-    constructors = tables["constructors"]
+    The ``tables`` mapping must contain the ``"results"``, ``"drivers"`` and
+    ``"constructors"`` tables.
+    """
+
+    results = tables.get("results")
+    if results is None:
+        raise ValueError("Required table 'results' is missing when building driver base")
+
+    drivers = tables.get("drivers")
+    if drivers is None:
+        raise ValueError("Required table 'drivers' is missing when building driver base")
+
+    constructors = tables.get("constructors")
+    if constructors is None:
+        raise ValueError(
+            "Required table 'constructors' is missing when building driver base"
+        )
 
     race_results = results.loc[results["raceId"] == race_id].copy()
     if race_results.empty:
@@ -274,6 +288,13 @@ def compute_qualifying_gap(
     tables: Mapping[str, pd.DataFrame],
     race_id: int,
 ) -> pd.DataFrame:
+    """Compute qualifying gaps relative to pole for drivers in ``base``.
+
+    The ``tables`` mapping may provide the optional ``"qualifying"`` table.
+    When it is missing or lacks data for the selected race, the
+    ``qualy_gap_ms`` column is filled with ``NaN``.
+    """
+
     qualifying = tables.get("qualifying")
     if qualifying is None:
         base["qualy_gap_ms"] = math.nan
@@ -316,6 +337,13 @@ def compute_fp_longrun_pace(
     scraper_tables: Mapping[str, pd.DataFrame],
     race_id: int,
 ) -> pd.DataFrame:
+    """Compute FP long-run pace combining telemetry and scraper sources.
+
+    The ``tables`` mapping may include the optional ``"lap_times"`` table. The
+    ``scraper_tables`` mapping may also provide a ``"longrun"`` table whose
+    contents override the computed pace when matching driver names are found.
+    """
+
     lap_times = tables.get("lap_times")
     fp_metric = pd.Series(dtype=float)
 
@@ -378,7 +406,16 @@ def compute_speed_metrics(
     tables: Mapping[str, pd.DataFrame],
     race_id: int,
 ) -> pd.DataFrame:
-    results = tables["results"]
+    """Compute speed trap and cornering indices for each driver.
+
+    The ``tables`` mapping must contain the ``"results"`` table and may include
+    the optional ``"lap_times"`` table.
+    """
+
+    results = tables.get("results")
+    if results is None:
+        raise ValueError("Required table 'results' is missing when computing speed metrics")
+
     race_results = results.loc[results["raceId"] == race_id].copy()
 
     if "fastestLapSpeed" in race_results:
@@ -441,6 +478,13 @@ def compute_pit_metrics(
     tables: Mapping[str, pd.DataFrame],
     race_id: int,
 ) -> pd.DataFrame:
+    """Compute pit stop statistics for each driver.
+
+    The ``tables`` mapping may provide the optional ``"pit_stops"`` table.
+    When it is unavailable the ``pit_crew_mean_s`` column is filled with
+    ``NaN``.
+    """
+
     pit_stops = tables.get("pit_stops")
     if pit_stops is None:
         base["pit_crew_mean_s"] = math.nan
@@ -475,6 +519,13 @@ def compute_pit_metrics(
 
 
 def _flag_dnf(results: pd.DataFrame, tables: Mapping[str, pd.DataFrame]) -> pd.Series:
+    """Return a boolean series indicating whether each result is a DNF.
+
+    The ``tables`` mapping may provide the optional ``"status"`` table used to
+    map ``statusId`` values. When it is missing, textual status fields in the
+    ``results`` dataframe are inspected instead.
+    """
+
     status_df = tables.get("status")
     if status_df is not None and "statusId" in results:
         safe_status = status_df["status"].astype(str)
@@ -495,8 +546,26 @@ def compute_dnf_and_sc_metrics(
     race_id: int,
     history_window: int,
 ) -> pd.DataFrame:
-    results = tables["results"].copy()
-    races = tables["races"][["raceId", "year", "round"]]
+    """Compute DNF rates per driver and recent safety car probability.
+
+    The ``tables`` mapping must include the ``"results"`` and ``"races"``
+    tables required to calculate the historical metrics.
+    """
+
+    results = tables.get("results")
+    if results is None:
+        raise ValueError(
+            "Required table 'results' is missing when computing DNF and safety car metrics"
+        )
+    results = results.copy()
+
+    races = tables.get("races")
+    if races is None:
+        raise ValueError(
+            "Required table 'races' is missing when computing DNF and safety car metrics"
+        )
+    races = races[["raceId", "year", "round"]].copy()
+
     results = results.merge(races, on="raceId", how="left")
     results["dnf_flag"] = _flag_dnf(results, tables)
 
@@ -549,6 +618,12 @@ def compute_rain_probability(
     scraper_tables: Mapping[str, pd.DataFrame],
     race_record: pd.Series,
 ) -> pd.DataFrame:
+    """Estimate the probability of rain during the race weekend.
+
+    The ``scraper_tables`` mapping may provide the optional ``"weather"``
+    table, which is searched for columns describing rain probabilities.
+    """
+
     weather_df = scraper_tables.get("weather")
     rain_probability: Optional[float] = None
 
@@ -628,8 +703,12 @@ def run_etl(config: ETLConfig) -> Path:
     tables = load_core_tables(config.datasets_dir)
     scraper_tables = load_scraper_tables(config.scraper_output_dir)
 
+    races_table = tables.get("races")
+    if races_table is None:
+        raise ValueError("Required table 'races' is missing when selecting the target race")
+
     race_record = select_target_race(
-        tables["races"],
+        races_table,
         year=config.race_year,
         round_number=config.race_round,
         name=config.race_name,

@@ -157,6 +157,17 @@ def load_scraper_tables(scraper_dir: Optional[Path]) -> Dict[str, pd.DataFrame]:
     return tables
 
 
+def _require_table(
+    tables: Mapping[str, pd.DataFrame], name: str, context: str
+) -> pd.DataFrame:
+    """Return a required table or raise a ``ValueError`` with context."""
+
+    table = tables.get(name)
+    if table is None:
+        raise ValueError(f"Required table '{name}' is missing when {context}")
+    return table
+
+
 def _to_datetime(series: pd.Series) -> pd.Series:
     """Safely parse a series containing ISO like dates or date-times."""
 
@@ -247,19 +258,9 @@ def build_driver_base(
     ``"constructors"`` tables.
     """
 
-    results = tables.get("results")
-    if results is None:
-        raise ValueError("Required table 'results' is missing when building driver base")
-
-    drivers = tables.get("drivers")
-    if drivers is None:
-        raise ValueError("Required table 'drivers' is missing when building driver base")
-
-    constructors = tables.get("constructors")
-    if constructors is None:
-        raise ValueError(
-            "Required table 'constructors' is missing when building driver base"
-        )
+    results = _require_table(tables, "results", "building driver base")
+    drivers = _require_table(tables, "drivers", "building driver base")
+    constructors = _require_table(tables, "constructors", "building driver base")
 
     race_results = results.loc[results["raceId"] == race_id].copy()
     if race_results.empty:
@@ -412,10 +413,7 @@ def compute_speed_metrics(
     the optional ``"lap_times"`` table.
     """
 
-    results = tables.get("results")
-    if results is None:
-        raise ValueError("Required table 'results' is missing when computing speed metrics")
-
+    results = _require_table(tables, "results", "computing speed metrics")
     race_results = results.loc[results["raceId"] == race_id].copy()
 
     if "fastestLapSpeed" in race_results:
@@ -552,20 +550,13 @@ def compute_dnf_and_sc_metrics(
     tables required to calculate the historical metrics.
     """
 
-    results = tables.get("results")
-    if results is None:
-        raise ValueError(
-            "Required table 'results' is missing when computing DNF and safety car metrics"
-        )
-    results = results.copy()
+    results = _require_table(
+        tables, "results", "computing DNF and safety car metrics"
+    ).copy()
 
-    races = tables.get("races")
-    if races is None:
-        raise ValueError(
-            "Required table 'races' is missing when computing DNF and safety car metrics"
-        )
-    races = races[["raceId", "year", "round"]].copy()
-
+    races = _require_table(
+        tables, "races", "computing DNF and safety car metrics"
+    )[["raceId", "year", "round"]].copy()
     results = results.merge(races, on="raceId", how="left")
     results["dnf_flag"] = _flag_dnf(results, tables)
 
@@ -703,12 +694,8 @@ def run_etl(config: ETLConfig) -> Path:
     tables = load_core_tables(config.datasets_dir)
     scraper_tables = load_scraper_tables(config.scraper_output_dir)
 
-    races_table = tables.get("races")
-    if races_table is None:
-        raise ValueError("Required table 'races' is missing when selecting the target race")
-
     race_record = select_target_race(
-        races_table,
+        _require_table(tables, "races", "selecting the target race"),
         year=config.race_year,
         round_number=config.race_round,
         name=config.race_name,

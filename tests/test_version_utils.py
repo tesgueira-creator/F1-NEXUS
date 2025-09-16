@@ -1,4 +1,4 @@
-import unittest
+import unittest  # Needed for unittest.TestCase subclasses and direct execution
 from typing import Optional
 
 from lib.version_utils import from_version_string

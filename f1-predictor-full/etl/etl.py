@@ -106,7 +106,6 @@ class ETLConfig:
 # ---------------------------------------------------------------------------
 def _read_csv_if_exists(path: Path) -> Optional[pd.DataFrame]:
     """Read a CSV file returning ``None`` when the path does not exist."""
-
     if not path.exists():
         LOGGER.warning("CSV file not found: %s", path)
         return None
@@ -117,7 +116,6 @@ def _read_csv_if_exists(path: Path) -> Optional[pd.DataFrame]:
 
 def load_core_tables(datasets_dir: Path) -> Dict[str, pd.DataFrame]:
     """Load the core Formula 1 tables required for the transformation."""
-
     tables: Dict[str, pd.DataFrame] = {}
     for name, filename in CORE_TABLES.items():
         table = _read_csv_if_exists(datasets_dir / filename)
@@ -138,7 +136,6 @@ def load_core_tables(datasets_dir: Path) -> Dict[str, pd.DataFrame]:
 
 def load_scraper_tables(scraper_dir: Optional[Path]) -> Dict[str, pd.DataFrame]:
     """Load optional scraper output tables if they exist."""
-
     tables: Dict[str, pd.DataFrame] = {}
     if scraper_dir is None:
         LOGGER.info("Scraper output directory not provided - continuing without enrichments")
@@ -159,7 +156,6 @@ def load_scraper_tables(scraper_dir: Optional[Path]) -> Dict[str, pd.DataFrame]:
 
 def _to_datetime(series: pd.Series) -> pd.Series:
     """Safely parse a series containing ISO like dates or date-times."""
-
     cleaned = series.replace({"\\N": None, "": None})
     return pd.to_datetime(cleaned, errors="coerce", utc=True)
 
@@ -172,7 +168,6 @@ def select_target_race(
     name: Optional[str] = None,
 ) -> pd.Series:
     """Return the race record that should be used for the feature set."""
-
     race_table = races.copy()
     race_table["date"] = _to_datetime(race_table["date"])
     if "time" in race_table.columns:
@@ -211,13 +206,11 @@ def select_target_race(
 
 def _normalise_name(value: str) -> str:
     """Create a canonical representation of a driver name for comparisons."""
-
     return re.sub(r"[^a-z]", "", str(value).lower())
 
 
 def _parse_time_to_ms(value: object) -> float:
     """Convert lap/qualifying times to milliseconds."""
-
     if value is None or (isinstance(value, float) and math.isnan(value)):
         return math.nan
 
@@ -242,7 +235,6 @@ def build_driver_base(
     race_id: int,
 ) -> pd.DataFrame:
     """Return the driver level dataframe for the chosen race."""
-
     results = tables["results"]
     drivers = tables["drivers"]
     constructors = tables["constructors"]
@@ -274,6 +266,16 @@ def compute_qualifying_gap(
     tables: Mapping[str, pd.DataFrame],
     race_id: int,
 ) -> pd.DataFrame:
+    """Calculate each driver's qualifying gap relative to pole position.
+
+    Args:
+        base: Driver baseline dataframe produced earlier in the pipeline.
+        tables: Mapping of core Formula 1 tables keyed by dataset name.
+        race_id: Identifier of the race being transformed.
+
+    Returns:
+        pd.DataFrame: ``base`` with an added ``qualy_gap_ms`` column.
+    """
     qualifying = tables.get("qualifying")
     if qualifying is None:
         base["qualy_gap_ms"] = math.nan
@@ -316,6 +318,17 @@ def compute_fp_longrun_pace(
     scraper_tables: Mapping[str, pd.DataFrame],
     race_id: int,
 ) -> pd.DataFrame:
+    """Estimate long-run pace using lap times and optional scraper overrides.
+
+    Args:
+        base: Driver baseline dataframe produced earlier in the pipeline.
+        tables: Mapping of core Formula 1 tables keyed by dataset name.
+        scraper_tables: Mapping of supplemental scraper datasets, if any.
+        race_id: Identifier of the race being transformed.
+
+    Returns:
+        pd.DataFrame: ``base`` with a ``fp_longrun_pace_s`` feature.
+    """
     lap_times = tables.get("lap_times")
     fp_metric = pd.Series(dtype=float)
 
@@ -378,6 +391,16 @@ def compute_speed_metrics(
     tables: Mapping[str, pd.DataFrame],
     race_id: int,
 ) -> pd.DataFrame:
+    """Derive speed trap and cornering indicators for the provided race.
+
+    Args:
+        base: Driver baseline dataframe produced earlier in the pipeline.
+        tables: Mapping of core Formula 1 tables keyed by dataset name.
+        race_id: Identifier of the race being transformed.
+
+    Returns:
+        pd.DataFrame: ``base`` enriched with speed trap and handling metrics.
+    """
     results = tables["results"]
     race_results = results.loc[results["raceId"] == race_id].copy()
 
@@ -441,6 +464,16 @@ def compute_pit_metrics(
     tables: Mapping[str, pd.DataFrame],
     race_id: int,
 ) -> pd.DataFrame:
+    """Compute pit stop pace statistics for each driver in the race.
+
+    Args:
+        base: Driver baseline dataframe produced earlier in the pipeline.
+        tables: Mapping of core Formula 1 tables keyed by dataset name.
+        race_id: Identifier of the race being transformed.
+
+    Returns:
+        pd.DataFrame: ``base`` with an additional pit crew average time column.
+    """
     pit_stops = tables.get("pit_stops")
     if pit_stops is None:
         base["pit_crew_mean_s"] = math.nan
@@ -495,6 +528,17 @@ def compute_dnf_and_sc_metrics(
     race_id: int,
     history_window: int,
 ) -> pd.DataFrame:
+    """Estimate DNF rate per driver and recent safety car probability.
+
+    Args:
+        base: Driver baseline dataframe produced earlier in the pipeline.
+        tables: Mapping of core Formula 1 tables keyed by dataset name.
+        race_id: Identifier of the race being transformed.
+        history_window: Number of recent races to include in rolling metrics.
+
+    Returns:
+        pd.DataFrame: ``base`` augmented with DNF rate and safety car features.
+    """
     results = tables["results"].copy()
     races = tables["races"][["raceId", "year", "round"]]
     results = results.merge(races, on="raceId", how="left")
@@ -549,6 +593,16 @@ def compute_rain_probability(
     scraper_tables: Mapping[str, pd.DataFrame],
     race_record: pd.Series,
 ) -> pd.DataFrame:
+    """Attach race rain probability using scraper weather data when available.
+
+    Args:
+        base: Driver baseline dataframe produced earlier in the pipeline.
+        scraper_tables: Mapping of supplemental scraper datasets, if any.
+        race_record: Race metadata for matching the weather feed.
+
+    Returns:
+        pd.DataFrame: ``base`` with a ``rain_prob`` feature set when possible.
+    """
     weather_df = scraper_tables.get("weather")
     rain_probability: Optional[float] = None
 
@@ -598,6 +652,14 @@ def compute_rain_probability(
 
 
 def finalise_dataset(base: pd.DataFrame) -> pd.DataFrame:
+    """Select and order the final feature columns for export.
+
+    Args:
+        base: DataFrame containing the aggregated race features.
+
+    Returns:
+        pd.DataFrame: Dataset matching :data:`OUTPUT_COLUMNS` layout.
+    """
     dataset = base.copy()
     dataset = dataset[[c for c in OUTPUT_COLUMNS if c in dataset.columns]]
 
@@ -610,6 +672,17 @@ def finalise_dataset(base: pd.DataFrame) -> pd.DataFrame:
 
 
 def save_dataset(dataset: pd.DataFrame, output_dir: Path, filename: Optional[str], race: pd.Series) -> Path:
+    """Persist the transformed dataset to disk.
+
+    Args:
+        dataset: Final dataset ready for export.
+        output_dir: Directory where the dataset will be stored.
+        filename: Optional explicit filename for the output CSV.
+        race: Race metadata used to derive default filenames.
+
+    Returns:
+        Path: Location of the saved CSV file.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if filename:
@@ -625,6 +698,14 @@ def save_dataset(dataset: pd.DataFrame, output_dir: Path, filename: Optional[str
 
 
 def run_etl(config: ETLConfig) -> Path:
+    """Execute the full ETL pipeline for the configured race.
+
+    Args:
+        config: Runtime options describing input locations and filters.
+
+    Returns:
+        Path: Location of the generated dataset CSV file.
+    """
     tables = load_core_tables(config.datasets_dir)
     scraper_tables = load_scraper_tables(config.scraper_output_dir)
 
@@ -655,6 +736,11 @@ def run_etl(config: ETLConfig) -> Path:
 
 
 def build_argument_parser() -> argparse.ArgumentParser:
+    """Create the command-line argument parser for the ETL script.
+
+    Returns:
+        argparse.ArgumentParser: Configured parser with supported options.
+    """
     parser = argparse.ArgumentParser(description="Formula 1 ETL pipeline")
     parser.add_argument("--datasets", type=Path, required=True, help="Path to the core datasets directory")
     parser.add_argument(
@@ -706,6 +792,14 @@ def build_argument_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Optional[Iterable[str]] = None) -> Path:
+    """Parse arguments and run the ETL pipeline when executed as a script.
+
+    Args:
+        argv: Optional iterable of command-line arguments.
+
+    Returns:
+        Path: Location of the generated dataset CSV file.
+    """
     parser = build_argument_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
 

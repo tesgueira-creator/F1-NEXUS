@@ -1,0 +1,18 @@
+# Dependencies
+**/node_modules/
+
+# Python artifacts
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Build outputs
+.next/
+dist/
+build/
+out/
+coverage/
+
+# Logs and temporary files
+*.log
+*.tmp

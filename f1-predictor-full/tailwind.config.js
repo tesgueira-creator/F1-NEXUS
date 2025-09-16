@@ -1,4 +1,5 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
+// Pull in Tailwind's default font stacks so we can extend them below.
 const plugin = require('tailwindcss/plugin');
 
 /** @type {import('tailwindcss').Config} */

@@ -554,6 +554,7 @@ def compute_rain_probability(
 
     if weather_df is not None:
         weather_df = weather_df.copy()
+        name_col: Optional[str] = None
         candidate_name_cols = [
             c
             for c in weather_df.columns
@@ -581,7 +582,8 @@ def compute_rain_probability(
                 numeric_cols = [
                     c
                     for c in matches.columns
-                    if pd.api.types.is_numeric_dtype(matches[c]) and c != name_col
+                    if pd.api.types.is_numeric_dtype(matches[c])
+                    and (name_col is None or c != name_col)
                 ]
                 if numeric_cols:
                     prob_col = numeric_cols[0]

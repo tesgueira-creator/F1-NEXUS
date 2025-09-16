@@ -21,8 +21,8 @@ def from_version_string(s: Optional[str]) -> Tuple[int, int, int]:
     - Leading 'v' is ignored ('v1.2.3' == '1.2.3')
     - Missing components default to 0 (eg. '1.2' -> (1,2,0))
     - Empty or None-like input returns (0,0,0)
-    - Raises ValueError for inputs that contain non-integer components
-      (except a leading 'v').
+    - Raises ValueError for inputs that contain non-integer or negative
+      components (except a leading 'v').
 
     Examples:
         >>> from_version_string('v2.10.3')
@@ -38,10 +38,14 @@ def from_version_string(s: Optional[str]) -> Tuple[int, int, int]:
     if not s:
         return 0, 0, 0
 
-    if s.startswith("v") or s.startswith("V"):
-        s = s[1:]
+    original_input = s
 
-    parts = s.split(".")
+    if s.startswith("v") or s.startswith("V"):
+        parsed = s[1:]
+    else:
+        parsed = s
+
+    parts = parsed.split(".")
     nums: list[int] = []
     for p in parts:
         if p == "":
@@ -49,10 +53,16 @@ def from_version_string(s: Optional[str]) -> Tuple[int, int, int]:
             nums.append(0)
             continue
         try:
-            nums.append(int(p))
+            value = int(p)
         except ValueError as exc:
-            msg = "Invalid version segment '{}' in '{}'".format(p, s)
+            msg = "Invalid version segment '{}' in '{}'".format(p, original_input)
             raise ValueError(msg) from exc
+
+        if value < 0:
+            msg = "Negative version segment '{}' in '{}'".format(p, original_input)
+            raise ValueError(msg)
+
+        nums.append(value)
 
     while len(nums) < 3:
         nums.append(0)

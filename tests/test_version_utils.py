@@ -20,6 +20,25 @@ class TestVersionUtils(unittest.TestCase):
         with self.assertRaises(ValueError):
             from_version_string("1.2.alpha")
 
+    def test_negative_version_component(self) -> None:
+        cases = [
+            ("1.-2.3", "-2"),
+            ("-1.2.3", "-1"),
+            ("v-1.2", "-1"),
+            ("v1.-2", "-2"),
+            (" -1", "-1"),
+        ]
+
+        for raw_input, negative_component in cases:
+            with self.subTest(raw_input=raw_input):
+                with self.assertRaises(ValueError) as cm:
+                    from_version_string(raw_input)
+                expected_message = (
+                    f"Negative version segment '{negative_component}' in "
+                    f"'{raw_input.strip()}'"
+                )
+                self.assertEqual(str(cm.exception), expected_message)
+
 
 if __name__ == "__main__":
     unittest.main()

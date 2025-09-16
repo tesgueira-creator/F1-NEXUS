@@ -1,1 +1,11 @@
-export default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang=\"en\">\n      <body className=\"bg-dark text-white min-h-screen\">{children}</body>\n    </html>\n  );\n}\n
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body className="bg-dark text-white min-h-screen">{children}</body>
+    </html>
+  );
+}

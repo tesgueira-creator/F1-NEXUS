@@ -1,0 +1,18 @@
+# Global owners
+* @tesgueira-creator
+
+# ETL and data processing
+/etl/ @tesgueira-creator
+/F1-NEXUS/lib/ @tesgueira-creator
+
+# Frontend
+/F1-NEXUS/f1-predictor-full/ @tesgueira-creator
+
+# Tests and CI
+/F1-NEXUS/tests/ @tesgueira-creator
+/.github/ @tesgueira-creator
+
+# Documentation
+/docs/ @tesgueira-creator
+README.md @tesgueira-creator
+CONTRIBUTING.md @tesgueira-creator

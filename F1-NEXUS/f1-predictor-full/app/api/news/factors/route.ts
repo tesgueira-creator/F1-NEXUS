@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 import { NextRequest, NextResponse } from "next/server";
-import { NewsArticle, NewsFactor, dedupeFactors, simpleHeuristicFromNews } from "lib/news-factors";
+import { NewsArticle, NewsFactor, dedupeFactors, simpleHeuristicFromNews, normaliseMagnitude } from "lib/news-factors";
 import { getRoster, resolveTargetsFromText } from "lib/roster";
 
 const OLLAMA_URL = process.env.OLLAMA_URL || "http://127.0.0.1:11434";

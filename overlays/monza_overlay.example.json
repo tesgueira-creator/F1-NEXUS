@@ -1,0 +1,56 @@
+[
+  {
+    "driver_name": "Max Verstappen",
+    "team_name": "Red Bull",
+    "as_of": "2025-09-09T14:00Z",
+    "subjective": {
+      "Confianca": 2,
+      "Pressao": -1,
+      "Emo": 1,
+      "Rumores": 0,
+      "Upgrades_Impact": 2
+    },
+    "sources": [
+      {"title":"Team update","url":"https://www.formula1.com/",
+       "type":"team"},
+      {"title":"Pirelli preview","url":"https://press.pirelli.com/en/",
+       "type":"pirelli"}
+    ],
+    "notes": "Pacote de baixo arrasto confirmado para Monza."
+  },
+  {
+    "driver_name": "Lando Norris",
+    "team_name": "McLaren",
+    "as_of": "2025-09-09T14:00Z",
+    "subjective": {
+      "Confianca": 1,
+      "Pressao": 0,
+      "Emo": 1,
+      "Rumores": 0,
+      "Upgrades_Impact": 1
+    },
+    "sources": [
+      {"title":"Autosport analysis","url":"https://www.autosport.com/",
+       "type":"news"}
+    ],
+    "notes": "Forma sólida nas últimas corridas."
+  },
+  {
+    "driver_name": "Charles Leclerc",
+    "team_name": "Ferrari",
+    "as_of": "2025-09-09T14:00Z",
+    "subjective": {
+      "Confianca": 0,
+      "Pressao": 1,
+      "Emo": 0,
+      "Rumores": 0,
+      "Upgrades_Impact": 1
+    },
+    "sources": [
+      {"title":"Team press","url":"https://www.formula1.com/",
+       "type":"team"}
+    ],
+    "notes": "Pressão adicional por corrida em casa."
+  }
+]
+

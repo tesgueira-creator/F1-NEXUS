@@ -1,0 +1,21 @@
+Piloto,Equipa,Pontuação Total,Confiança,Momentum,Pressão,Estado Emocional,Setup,Motor,Aero,Pneus,Combustível,Fiabilidade,Rumores,Conflitos,Ultimas5,QualiMédia,TaxaAbandono,Clima,SafetyCar,Notas,Grid,LongRunPace,TopSpeed,TrackFit_Aero,TrackFit_Power,PitStopAvg,Deg,Upgrades
+Max Verstappen,Red Bull Racing,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Max Verstappen,1,78.792,48.6,0.0,0.0,24.459,0.4,Impacto Upgrades=1. Converted from new schema
+Lando Norris,McLaren,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Lando Norris,2,78.869,45.7,0.0,0.0,25.550,0.4,Impacto Upgrades=1. Converted from new schema
+Oscar Piastri,McLaren,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Oscar Piastri,3,78.982,45.8,0.0,0.0,25.550,0.4,Impacto Upgrades=1. Converted from new schema
+Charles Leclerc,Ferrari,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Charles Leclerc,4,79.007,50.9,0.0,0.0,24.103,0.4,Impacto Upgrades=1. Converted from new schema
+George Russell,Mercedes,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - George Russell,5,79.157,48.1,0.0,0.0,24.969,0.4,Impacto Upgrades=1. Converted from new schema
+Kimi Antonelli,Mercedes,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Kimi Antonelli,6,79.200,47.7,0.0,0.0,24.969,0.4,Impacto Upgrades=1. Converted from new schema
+Gabriel Bortoleto,Kick Sauber,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Gabriel Bortoleto,7,79.390,55.9,0.0,0.0,26.143,0.4,Impacto Upgrades=1. Converted from new schema
+Fernando Alonso,Aston Martin,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.30,0,0,Converted from new schema - Fernando Alonso,8,79.424,49.6,0.0,0.0,31.789,0.4,Impacto Upgrades=1. Converted from new schema
+Yuki Tsunoda,Red Bull Racing,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Yuki Tsunoda,9,79.519,48.4,0.0,0.0,24.459,0.4,Impacto Upgrades=1. Converted from new schema
+Lewis Hamilton,Ferrari,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Lewis Hamilton,10,79.124,52.7,0.0,0.0,24.103,0.4,Impacto Upgrades=1. Converted from new schema
+Oliver Bearman,Haas,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Oliver Bearman,11,79.446,49.5,0.0,0.0,28.063,0.4,Impacto Upgrades=1. Converted from new schema
+Nico Hulkenberg,Kick Sauber,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.30,0,0,Converted from new schema - Nico Hulkenberg,12,79.498,55.9,0.0,0.0,26.143,0.4,Impacto Upgrades=1. Converted from new schema
+Carlos Sainz,Williams,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Carlos Sainz,13,79.528,49.1,0.0,0.0,24.661,0.4,Impacto Upgrades=1. Converted from new schema
+Alexander Albon,Williams,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Alexander Albon,14,79.583,45.9,0.0,0.0,24.661,0.4,Impacto Upgrades=1. Converted from new schema
+Esteban Ocon,Haas,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Esteban Ocon,15,79.707,48.0,0.0,0.0,28.063,0.4,Impacto Upgrades=1. Converted from new schema
+Lance Stroll,Aston Martin,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Lance Stroll,16,79.948,46.9,0.0,0.0,31.789,0.4,Impacto Upgrades=1. Converted from new schema
+Franco Colapinto,Alpine,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Franco Colapinto,17,79.992,45.0,0.0,0.0,24.992,0.4,Impacto Upgrades=1. Converted from new schema
+Liam Lawson,Racing Bulls,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Liam Lawson,18,80.279,44.9,0.0,0.0,24.241,0.4,Impacto Upgrades=1. Converted from new schema
+Isack Hadjar,Racing Bulls,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Isack Hadjar,19,79.917,50.1,0.0,0.0,24.241,0.4,Impacto Upgrades=1. Converted from new schema
+Pierre Gasly,Alpine,0,5,0,3,4,3.5,3,3.5,3,3,3,0,0,,0.0,0.08,0,0,Converted from new schema - Pierre Gasly,20,80.103,45.7,0.0,0.0,24.992,0.4,Impacto Upgrades=1. Converted from new schema

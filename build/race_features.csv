@@ -1,0 +1,2 @@
+race_id,season,round,circuit_id,circuit_name,country,date_local,start_time_local,timezone,laps,track_length_km,altitude_m,drs_zones,overtake_index,pit_lane_loss_s,sc_prob,vsc_prob,sc_avg_count,retire_prob,tyre_stress,asphalt_grip,asphalt_roughness,track_temp_typical_c,wind_typical_kph,rain_prob
+monza_2024_race,2024,0,monza,Autodromo Nazionale Monza,Italy,2024-09-01,15:00,Europe/Rome,53,5.793,0,2,0.5,20.0,0.3,0.2,1.0,0.08,3,3,2,,,

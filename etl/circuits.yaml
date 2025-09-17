@@ -1,0 +1,104 @@
+# Circuit configuration for F1 ETL pipeline
+circuits:
+  monza:
+    name: "Autodromo Nazionale Monza"
+    country: "Italy"
+    lat: 45.615
+    lon: 9.281
+    altitude_m: 162
+    laps: 53
+    track_length_km: 5.793
+    timezone: "Europe/Rome"
+    drs_zones: 3
+    overtake_index: 0.7  # High overtaking potential
+    pit_lane_loss_s: 19.5
+    sc_prob: 0.25  # Historical average
+    vsc_prob: 0.15
+    sc_avg_count: 0.8
+    retire_prob: 0.12
+    tyre_stress: 4  # High speed stress
+    asphalt_grip: 3
+    asphalt_roughness: 2
+    
+  silverstone:
+    name: "Silverstone Circuit"
+    country: "United Kingdom"
+    lat: 52.071
+    lon: -1.014
+    altitude_m: 153
+    laps: 52
+    track_length_km: 5.891
+    timezone: "Europe/London"
+    drs_zones: 2
+    overtake_index: 0.6
+    pit_lane_loss_s: 22.0
+    sc_prob: 0.20
+    vsc_prob: 0.12
+    sc_avg_count: 0.6
+    retire_prob: 0.10
+    tyre_stress: 5  # Very demanding on tyres
+    asphalt_grip: 4
+    asphalt_roughness: 3
+    
+  spa:
+    name: "Circuit de Spa-Francorchamps"
+    country: "Belgium"
+    lat: 50.437
+    lon: 5.971
+    altitude_m: 401
+    laps: 44
+    track_length_km: 7.004
+    timezone: "Europe/Brussels"
+    drs_zones: 2
+    overtake_index: 0.8  # DRS zones + elevation changes
+    pit_lane_loss_s: 24.0
+    sc_prob: 0.35  # Weather and long circuit
+    vsc_prob: 0.20
+    sc_avg_count: 1.2
+    retire_prob: 0.15  # Demanding circuit
+    tyre_stress: 4
+    asphalt_grip: 3
+    asphalt_roughness: 4
+
+  monaco:
+    name: "Circuit de Monaco"
+    country: "Monaco"
+    lat: 43.734
+    lon: 7.420
+    altitude_m: 7
+    laps: 78
+    track_length_km: 3.337
+    timezone: "Europe/Monaco"
+    drs_zones: 1
+    overtake_index: 0.1  # Very difficult to overtake
+    pit_lane_loss_s: 23.0
+    sc_prob: 0.45  # High SC probability due to barriers
+    vsc_prob: 0.25
+    sc_avg_count: 1.5
+    retire_prob: 0.20
+    tyre_stress: 2  # Low speeds
+    asphalt_grip: 5
+    asphalt_roughness: 2
+
+# Default ETL settings
+defaults:
+  session: "FP2"
+  cache_dir: "./fastf1_cache"
+  output_dir: "./build"
+  start_time: "15:00"  # Default race start (local time)
+  
+# Season-specific overrides
+seasons:
+  2024:
+    rounds:
+      16: # Monza
+        circuit: monza
+        date: "2024-09-01"
+      10: # Silverstone  
+        circuit: silverstone
+        date: "2024-07-07"
+  2025:
+    rounds:
+      16: # Monza
+        circuit: monza
+        date: "2025-09-07"
